@@ -37,8 +37,8 @@ output:
         library(ggplot2)
         sum_by_day <- rawData %>%
           group_by(date) %>%
-            summarise(steps_taken_by_day = sum(steps, na.rm=TRUE)) %>%
-        ungroup()
+            summarise(steps_taken_by_day = sum(steps, na.rm=TRUE), .groups="drop") %>%
+          ungroup()
         mean_steps <- mean(sum_by_day$steps_taken_by_day, na.rm=TRUE)
         median_steps <- median(sum_by_day$steps_taken_by_day, na.rm=TRUE)
         
@@ -63,7 +63,7 @@ output:
 ```
 
 ``` r
-        ggplot(sum_by_day, aes(x=steps_taken_by_day))+ geom_histogram(binwidth = 1000) + xlab("Total Steps by day") + ylab("Count") + scale_y_continuous(breaks = scales::breaks_width(2)) + ggtitle("Steps per day Histogram")
+        ggplot(sum_by_day, aes(x=steps_taken_by_day))+ geom_histogram(binwidth = 1000) + xlab("Total Steps by day") + ylab("Frequency") + scale_y_continuous(breaks = scales::breaks_width(2)) + ggtitle("Steps per day Histogram")
 ```
 
 ![](PA1_template_files/figure-html/unnamed-chunk-2-1.png)<!-- -->
@@ -90,9 +90,9 @@ The mean steps is 9354.23 and the median steps is 10395 of the total number of s
 ``` r
         mean_steps_by_interval <- rawData %>%
           group_by(interval) %>%
-            summarise(mean_steps = mean(steps, na.rm=TRUE)) %>%
+            summarise(mean_steps = mean(steps, na.rm=TRUE), .groups="drop") %>%
           ungroup()
-        ggplot(mean_steps_by_interval, aes(x=interval, y=mean_steps)) + geom_line() + xlab("Interval") +     ylab("Average number of steps taken") + ggtitle("Daily active pattern")
+        ggplot(mean_steps_by_interval, aes(x=interval, y=mean_steps)) + geom_line() + xlab("Interval") + ylab("Average number of steps taken") + ggtitle("Daily active pattern")
 ```
 
 ![](PA1_template_files/figure-html/unnamed-chunk-3-1.png)<!-- -->
@@ -134,11 +134,11 @@ I replaced NA steps with the mean steps calculated for each intervals.
           ) %>%
           ungroup()
         
-        sum_by_day_imputed <- summarise(group_by(rawData_imputed,date),steps_taken_by_day_imputed = sum(steps_imputed, na.rm=TRUE))
+        sum_by_day_imputed <- summarise(group_by(rawData_imputed,date),steps_taken_by_day_imputed = sum(steps_imputed, na.rm=TRUE), .groups="drop")
         mean_steps_imputed <- mean(sum_by_day_imputed$steps_taken_by_day_imputed, na.rm=TRUE)
         median_steps_imputed <- median(sum_by_day_imputed$steps_taken_by_day_imputed, na.rm=TRUE)
         
-        ggplot(sum_by_day_imputed, aes(x=steps_taken_by_day_imputed))+ geom_histogram(binwidth = 1000) + xlab("Total Steps by day") + ylab("Count") + scale_y_continuous(breaks = scales::breaks_width(2)) + ggtitle("Imputed Dataset Histogram")
+        ggplot(sum_by_day_imputed, aes(x=steps_taken_by_day_imputed))+ geom_histogram(binwidth = 1000) + xlab("Total Steps by day") + ylab("Frequency") + scale_y_continuous(breaks = scales::breaks_width(2)) + ggtitle("Imputed Dataset Histogram")
 ```
 
 ![](PA1_template_files/figure-html/unnamed-chunk-5-1.png)<!-- -->
@@ -167,26 +167,15 @@ The imputed mean and median steps are same.
         rawData$date <- as.Date(rawData$date)
         Data_weekday <- rawData %>%
           mutate(
-            is_weekday = !weekdays(date) %in% c("Saturday", "Sunday", "土曜日", "日曜日")
+            is_weekday = ifelse(weekdays(date) %in% c("Saturday", "Sunday", "土曜日", "日曜日"), "weekend", "weekday")
           )
-        weekday_true <- subset(Data_weekday, is_weekday == TRUE)
-        weekday_false <- subset(Data_weekday, is_weekday == FALSE)
-       
-        mean_steps_by_interval_weekday <- weekday_true %>%
-          group_by(interval) %>%
-            summarise(mean_steps = mean(steps, na.rm=TRUE)) %>%
+        
+        mean_steps_by_interval_weekday <- Data_weekday %>%
+          group_by(interval,is_weekday) %>%
+            summarise(mean_steps = mean(steps, na.rm=TRUE), .groups="drop") %>%
           ungroup()
-        ggplot(mean_steps_by_interval_weekday, aes(x=interval, y=mean_steps)) + geom_line() + xlab("Interval") +     ylab("Average number of steps taken") + ggtitle("Weekdays")
+        
+        ggplot(mean_steps_by_interval_weekday, aes(x = interval, y = mean_steps)) + geom_line() + xlab("Interval") + ylab("Average number of steps taken") + facet_grid(is_weekday ~.) + ggtitle("Active pattern _ Weekday vs Weekend")
 ```
 
 ![](PA1_template_files/figure-html/unnamed-chunk-6-1.png)<!-- -->
-
-``` r
-        mean_steps_by_interval_weekend <- weekday_false %>%
-          group_by(interval) %>%
-            summarise(mean_steps = mean(steps, na.rm=TRUE)) %>%
-          ungroup()
-        ggplot(mean_steps_by_interval_weekend, aes(x=interval, y=mean_steps)) + geom_line() + xlab("Interval") +     ylab("Average number of steps taken") + ggtitle("Weekends")
-```
-
-![](PA1_template_files/figure-html/unnamed-chunk-6-2.png)<!-- -->
