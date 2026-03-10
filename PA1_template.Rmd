@@ -16,7 +16,7 @@ output:
         sum_by_day <- rawData %>%
           group_by(date) %>%
             summarise(steps_taken_by_day = sum(steps, na.rm=TRUE)) %>%
-        ungroup()
+          ungroup()
         mean_steps <- mean(sum_by_day$steps_taken_by_day, na.rm=TRUE)
         median_steps <- median(sum_by_day$steps_taken_by_day, na.rm=TRUE)
         
@@ -82,12 +82,12 @@ The imputed mean and median steps are same.
           group_by(interval) %>%
             summarise(mean_steps = mean(steps, na.rm=TRUE)) %>%
           ungroup()
-        ggplot(mean_steps_by_interval_weekday, aes(x=interval, y=mean_steps)) + geom_line() + xlab("Interval") +     ylab("Average number of steps taken") + ggtitle("Weekdays")
+        ggplot(mean_steps_by_interval_weekday, aes(x=interval, y=mean_steps)) + geom_line() + xlab("Interval") +     ylab("Average number of steps taken") + ggtitle("Weekday")
         
         mean_steps_by_interval_weekend <- weekday_false %>%
           group_by(interval) %>%
             summarise(mean_steps = mean(steps, na.rm=TRUE)) %>%
           ungroup()
-        ggplot(mean_steps_by_interval_weekend, aes(x=interval, y=mean_steps)) + geom_line() + xlab("Interval") +     ylab("Average number of steps taken") + ggtitle("Weekends")
+        ggplot(mean_steps_by_interval_weekend, aes(x=interval, y=mean_steps)) + geom_line() + xlab("Interval") +     ylab("Average number of steps taken") + ggtitle("Weekend")
         
 ```
