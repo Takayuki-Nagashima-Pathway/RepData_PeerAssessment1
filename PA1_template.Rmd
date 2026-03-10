@@ -21,7 +21,7 @@ output:
         median_steps <- median(sum_by_day$steps_taken_by_day, na.rm=TRUE)
         
         sum_by_day
-        ggplot(sum_by_day, aes(x=steps_taken_by_day))+ geom_histogram(binwidth = 1000) + xlab("Total Steps by day") + ylab("Count") + scale_y_continuous(breaks = scales::breaks_width(2)) + ggtitle("Steps per day Histogram")
+        ggplot(sum_by_day, aes(x=steps_taken_by_day))+ geom_histogram(binwidth = 1000) + xlab("Total Steps by day") + ylab("Frequency") + scale_y_continuous(breaks = scales::breaks_width(2)) + ggtitle("Steps per day Histogram")
         mean_steps
         median_steps
 ```
@@ -61,7 +61,7 @@ I replaced NA steps with the mean steps calculated for each intervals.
         mean_steps_imputed <- mean(sum_by_day_imputed$steps_taken_by_day_imputed, na.rm=TRUE)
         median_steps_imputed <- median(sum_by_day_imputed$steps_taken_by_day_imputed, na.rm=TRUE)
         
-        ggplot(sum_by_day_imputed, aes(x=steps_taken_by_day_imputed))+ geom_histogram(binwidth = 1000) + xlab("Total Steps by day") + ylab("Count") + scale_y_continuous(breaks = scales::breaks_width(2)) + ggtitle("Imputed Dataset Histogram")
+        ggplot(sum_by_day_imputed, aes(x=steps_taken_by_day_imputed))+ geom_histogram(binwidth = 1000) + xlab("Total Steps by day") + ylab("Frequency") + scale_y_continuous(breaks = scales::breaks_width(2)) + ggtitle("Imputed Dataset Histogram")
         mean_steps_imputed
         median_steps_imputed
 ```
